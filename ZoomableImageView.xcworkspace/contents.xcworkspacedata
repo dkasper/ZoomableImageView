@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:ZoomableImageView/ZoomableImageView.h">
+   </FileRef>
+   <FileRef
+      location = "group:ZoomableImageView/ZoomableImageView.m">
+   </FileRef>
+   <FileRef
+      location = "group:ZoomableImageView/ZoomableImageView+private.h">
+   </FileRef>
+   <FileRef
+      location = "group:ZoomableImageView/UIGestureRecognizer+ConvinenceContructor.h">
+   </FileRef>
+   <FileRef
+      location = "group:ZoomableImageView/UIGestureRecognizer+ConvinenceContructor.m">
+   </FileRef>
+   <FileRef
+      location = "group:ZoomableImageView/UIView+Alignment.h">
+   </FileRef>
+   <FileRef
+      location = "group:ZoomableImageView/UIView+Alignment.m">
+   </FileRef>
+</Workspace>
