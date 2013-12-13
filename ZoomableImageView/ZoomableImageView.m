@@ -4,22 +4,54 @@
 
 @implementation ZoomableImageView
 
+- (void)setupWithImageURL:(NSURL *)url
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupPostImageLoaded) name:AsyncImageLoadDidFinish object:nil];
+    
+    [self setupPreImageLoaded];
+    
+    [self setupImageView];
+    
+    self.delegate = self;
+    self.imageView.image = nil;
+    self.imageView.imageURL = url;
+}
+
 - (void)setupWithImage:(UIImage *)image
 {
-    self.minimumZoomScale = LightboxMinimumZoomScale;
-    self.maximumZoomScale = LightboxMaximumZoomScale;
-    [self setupGesturesForScrollView];
+    [self setupPreImageLoaded];
+    
     [self setupImageView];
+    
     self.delegate = self;
-
     self.imageView.image = image;
-    [self.imageView sizeToFit];
     
-    CGSize initialSize = CGSizeMake(self.frame.size.width, self.frame.size.height);
-    [self resizeToContent:initialSize];
+    [self setupPostImageLoaded];
+}
+
+- (void)setupImageView
+{
+    self.imageView = [[AsyncImageView alloc] initWithFrame:self.frame];
+    NSLog(@"image view new size: %@", NSStringFromCGSize(self.frame.size));
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self addSubview:self.imageView];
+}
+
+- (void)setupPreImageLoaded
+{
+    [self setupZoomScale];
+    [self setupGesturesForScrollView];
+}
+
+- (void)setupZoomScale
+{
+    if (!self.maximumZoomScale) {
+        self.maximumZoomScale = LightboxMaximumZoomScale;
+    }
     
-    self.zoomScale = self.minimumZoomScale;
-    [self.imageView centerWithinSuperview];
+    if (!self.minimumZoomScale) {
+        self.minimumZoomScale = LightboxMinimumZoomScale;
+    }
 }
 
 - (void)setupGesturesForScrollView
@@ -35,11 +67,17 @@
     [singleTap requireGestureRecognizerToFail:doubleTap];
 }
 
-- (void)setupImageView
+- (void)setupPostImageLoaded
 {
-    self.imageView = [[UIImageView alloc] initWithFrame:self.frame];
-    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self addSubview:self.imageView];
+    [self.imageView sizeToFit];
+    
+    CGSize initialSize = CGSizeMake(self.frame.size.width, self.frame.size.height);
+    NSLog(@"initial size: %@", NSStringFromCGSize(initialSize));
+    
+    [self resizeToContent:initialSize];
+    
+    self.zoomScale = self.minimumZoomScale;
+    [self.imageView centerWithinSuperview];
 }
 
 - (void)userDidSingleTap:(UITapGestureRecognizer *)recognizer
@@ -89,7 +127,6 @@
     
     CGFloat minimumZoomScale = [self calculateMinimumZoomScale:initialSize];
     self.minimumZoomScale = minimumZoomScale;
-    
 }
 
 - (UIView *)contentView
