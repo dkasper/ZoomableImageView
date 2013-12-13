@@ -10,5 +10,5 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source_files = "ZoomableImageView", "ZoomableImageView/**/*.{h,m}"
   s.frameworks   = "Foundation", "UIKit"
-  s.dependency   = "AsyncImageView"
+  s.dependency 'AsyncImageView'
 end
