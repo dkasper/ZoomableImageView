@@ -4,14 +4,26 @@
 
 @implementation ZoomableImageView
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setupImageView];
+    }
+
+    return self;
+}
+
+- (void)awakeFromNib
+{
+    [self setupImageView];
+}
+
 - (void)setupWithImageURL:(NSURL *)url
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupPostImageLoaded) name:AsyncImageLoadDidFinish object:nil];
-    
     [self setupPreImageLoaded];
-    
-    [self setupImageView];
-    
+
     self.delegate = self;
     self.imageView.image = nil;
     self.imageView.imageURL = url;
@@ -20,19 +32,16 @@
 - (void)setupWithImage:(UIImage *)image
 {
     [self setupPreImageLoaded];
-    
-    [self setupImageView];
-    
+
     self.delegate = self;
     self.imageView.image = image;
-    
+
     [self setupPostImageLoaded];
 }
 
 - (void)setupImageView
 {
     self.imageView = [[AsyncImageView alloc] initWithFrame:self.frame];
-    NSLog(@"image view new size: %@", NSStringFromCGSize(self.frame.size));
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self addSubview:self.imageView];
 }
@@ -48,7 +57,7 @@
     if (!self.maximumZoomScale) {
         self.maximumZoomScale = LightboxMaximumZoomScale;
     }
-    
+
     if (!self.minimumZoomScale) {
         self.minimumZoomScale = LightboxMinimumZoomScale;
     }
@@ -64,23 +73,22 @@
     UITapGestureRecognizer *singleTap = [UITapGestureRecognizer gestureWithTarget:self action:@selector(userDidSingleTap:)];
     singleTap.numberOfTapsRequired = 1;
     [self addGestureRecognizer:singleTap];
-    
+
     UITapGestureRecognizer *doubleTap = [UITapGestureRecognizer gestureWithTarget:self action:@selector(userDidDoubleTap:)];
     doubleTap.numberOfTapsRequired = 2;
     [self addGestureRecognizer:doubleTap];
-    
+
     [singleTap requireGestureRecognizerToFail:doubleTap];
 }
 
 - (void)setupPostImageLoaded
 {
     [self.imageView sizeToFit];
-    
+
     CGSize initialSize = CGSizeMake(self.frame.size.width, self.frame.size.height);
-    NSLog(@"initial size: %@", NSStringFromCGSize(initialSize));
-    
+
     [self resizeToContent:initialSize];
-    
+
     self.zoomScale = self.minimumZoomScale;
     [self.imageView centerWithinSuperview];
 }
@@ -94,7 +102,7 @@
 {
     CGFloat desiredScale = [self doubleTapDestinationZoomScale];
     CGRect zoomRect = [self zoomRectForScale:desiredScale recognizer:recognizer];
-    
+
     [self zoomToRect:zoomRect animated:YES];
     [self setZoomScale:desiredScale animated:YES];
 }
@@ -107,13 +115,13 @@
 
 - (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center {
     CGRect zoomRect;
-    
+
     zoomRect.size.height = [self frame].size.height / scale;
     zoomRect.size.width  = [self frame].size.width  / scale;
-    
+
     zoomRect.origin.x    = center.x - ((zoomRect.size.width / 2.0));
     zoomRect.origin.y    = center.y - ((zoomRect.size.height / 2.0));
-    
+
     return zoomRect;
 }
 
@@ -129,7 +137,7 @@
 - (void)resizeToContent:(CGSize)initialSize;
 {
     self.contentSize = [self contentView].frame.size;
-    
+
     CGFloat minimumZoomScale = [self calculateMinimumZoomScale:initialSize];
     self.minimumZoomScale = minimumZoomScale;
 }
