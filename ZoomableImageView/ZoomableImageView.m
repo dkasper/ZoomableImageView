@@ -54,6 +54,11 @@
     }
 }
 
+- (void)resetImage
+{
+    self.imageView.image = nil;
+}
+
 - (void)setupGesturesForScrollView
 {
     UITapGestureRecognizer *singleTap = [UITapGestureRecognizer gestureWithTarget:self action:@selector(userDidSingleTap:)];

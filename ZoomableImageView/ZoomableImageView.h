@@ -9,5 +9,5 @@
 - (void)resizeToContent:(CGSize)initialSize;
 - (void)setupWithImage:(UIImage *)image;
 - (void)setupWithImageURL:(NSURL *)url;
-
+- (void)resetImage;
 @end
