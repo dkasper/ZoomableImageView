@@ -8,6 +8,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        [self setupScrollView];
         [self setupImageView];
     }
 
@@ -16,7 +17,14 @@
 
 - (void)awakeFromNib
 {
+    [self setupScrollView];
     [self setupImageView];
+}
+
+- (void)setupScrollView
+{
+    self.showsHorizontalScrollIndicator = NO;
+    self.showsVerticalScrollIndicator = NO;
 }
 
 - (void)setupWithImageURL:(NSURL *)url
