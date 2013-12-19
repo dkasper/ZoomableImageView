@@ -56,6 +56,8 @@
 
 - (void)setupPreImageLoaded
 {
+    self.imageView.crossfadeImages = YES;
+
     [self setupZoomScale];
     [self setupGesturesForScrollView];
 }
@@ -73,6 +75,7 @@
 
 - (void)resetImage
 {
+    self.imageView.crossfadeImages = NO;
     self.imageView.image = nil;
 }
 
